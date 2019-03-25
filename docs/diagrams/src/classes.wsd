@@ -1,0 +1,86 @@
+@startuml
+
+' Classes '
+
+package Static {
+    class SSH {
+        {static} is_ssh_installed()
+        {static} run(connection : SSHConnection)
+        {static} validate(connection : SSHConnection) : boolean
+    }
+}
+
+package Domain {
+    class SSHConnection {
+        name
+        forward : PortForward
+        key_path
+        user
+        password
+        server_url
+        ssh_port
+
+        get_ssh_command()
+    }
+
+    class PortForward {
+        id
+        local_port
+        dest_ip_dns
+        dest_port
+    }
+
+    class SSHProfile {
+        id
+        profiles : List<SSHConnection>
+    }
+}
+
+package DAO {
+    class SSHProfileDAO {
+        insert(sshp : SSHProfile)
+        select(id)
+        delete(id)
+    }
+
+    class PortForwardDAO {
+        insert(pf : PortForward)
+        select(id)
+        delete(id)
+    }
+
+    class SSHConnectionDAO {
+        insert(sshc : SSHConnection)
+        select(name)
+        delete(name)
+    }
+}
+
+class Runner {
+    ssh_profile : SSHProfile
+
+    connect(connection_name)
+    show_connection(connection_name)
+    list()
+    add(name, local_port, dest_ip_dns, dest_port, key_path, user, password, server_url, ssh_port)
+    add_prompt()
+    remove(connection_name)
+}
+
+' Relationships '
+
+SSH ..> SSHConnection
+SSHConnection *-- PortForward
+SSHProfile *-- SSHConnection
+
+Runner *-- SSHProfile
+Runner ..> SSH
+Runner ..> SSHProfile
+Runner ..> PortForward
+Runner ..> SSHConnection
+Runner ..> SSHConnectionDAO
+Runner ..> SSHProfileDAO
+Runner ..> PortForwardDAO
+
+
+@enduml
