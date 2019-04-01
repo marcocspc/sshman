@@ -13,51 +13,33 @@ package Static {
 package Domain {
     class SSHConnection {
         name
-        forward : PortForward
         key_path
         user
-        password
         server_url
         ssh_port
+        fwd_local_port
+        fwd_dest_ip_dns
+        fwd_dest_port
 
         get_ssh_command()
     }
 
-    class PortForward {
-        id
-        local_port
-        dest_ip_dns
-        dest_port
-    }
-
     class SSHProfile {
-        id
+        user_id
         profiles : List<SSHConnection>
     }
 }
 
-package DAO {
-    class SSHProfileDAO {
-        insert(sshp : SSHProfile)
-        select(id)
-        delete(id)
-    }
-
-    class PortForwardDAO {
-        insert(pf : PortForward)
-        select(id)
-        delete(id)
-    }
-
-    class SSHConnectionDAO {
-        insert(sshc : SSHConnection)
-        select(name)
-        delete(name)
+package Dumper {
+    class SSHProfileDumper {
+        save(sshp : SSHProfile)
+        load()
     }
 }
 
 class Runner {
     ssh_profile : SSHProfile
+    dumper : SSHProfileDumper
 
     connect(connection_name)
     show_connection(connection_name)
@@ -70,17 +52,15 @@ class Runner {
 ' Relationships '
 
 SSH ..> SSHConnection
-SSHConnection *-- PortForward
 SSHProfile *-- SSHConnection
 
 Runner *-- SSHProfile
 Runner ..> SSH
 Runner ..> SSHProfile
-Runner ..> PortForward
 Runner ..> SSHConnection
-Runner ..> SSHConnectionDAO
-Runner ..> SSHProfileDAO
-Runner ..> PortForwardDAO
+Runner ..> SSHProfileDumper
+
+SSHProfileDumper ..> SSHProfile
 
 
 @enduml
