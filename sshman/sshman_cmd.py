@@ -24,7 +24,11 @@ def main():
     elif 'help' in sys.argv:
         print_help()
     else:
-        print_help()
+        try:
+            name = sys.argv[1]
+            runner.connect(name)
+        except (IndexError, AttributeError):
+            print_help()
         
 
 def print_help():
