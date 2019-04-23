@@ -6,9 +6,9 @@ class SSHProfile:
         self.profiles = []
     
     def __str__(self):
-        string = "\n"
+        string = ""
         for sshprofile in self.profiles:
-            string += sshprofile.__str__()
+            string += sshprofile.name 
             string += "\n"
         
         return string
