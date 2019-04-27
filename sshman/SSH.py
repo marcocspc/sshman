@@ -8,6 +8,7 @@ def is_ssh_installed():
 
 def run(connection):
     if (is_ssh_installed):
-        call(connection.get_ssh_command())
+        cmd = connection.get_ssh_command().__str__()  
+        call(cmd)
     else:
         print('SSH is not available.')
