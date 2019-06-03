@@ -4,6 +4,7 @@ from .Dumper import SSHProfileDumper
 from . import SSH as ssh 
 from .Domain import SSHConnection
 from .Domain import SSHProfile
+from .Domain import PortForwarding 
 
 class Runner:
     def __init__(self):
@@ -37,12 +38,13 @@ class Runner:
         else:
             print(self.ssh_profile, end="")
 
-    def add(self, name, local_port, dest_ip_dns, 
-        dest_port, key_path, user, 
+    def add(self, name, fwd_list, key_path, user, 
         server_url, ssh_port):
 
-        new_ssh = SSHConnection(name, user, server_url, ssh_port,
-        key_path, local_port, dest_ip_dns, dest_port)
+        new_ssh = SSHConnection(name, user, server_url, ssh_port, key_path)
+
+        for fwd in fwd_list:
+            new_ssh.forwardings.append(fwd)
         
         self.ssh_profile.profiles.append(new_ssh)
         self.dumper.save(self.ssh_profile)
@@ -77,12 +79,20 @@ class Runner:
         
         local_port, dest_ip_dns, dest_port = None, None, None
         option = get_string_input("Will you use port forwarding? [y/n]", "n")
-        if str.lower(option) == "y":
+        forwardings = []
+
+        while(str.lower(option) == "y"):
             local_port = input("Insert local port: ")
             dest_ip_dns = input("Insert destination URL: ")
-            dest_port = input("Insert destination port: ")
+            dest_port = input("Insert destination port: ") 
 
-        self.add(name, local_port, dest_ip_dns, dest_port, ssh_key, user, 
+            fwd = PortForwarding(local_port, dest_ip_dns,
+                    dest_port)
+            forwardings.append(fwd)
+
+            option = get_string_input("Will you add another port forwarding? [y/n]", "n")
+
+        self.add(name, forwardings, ssh_key, user, 
             server_url, ssh_port)
 
     def remove(self, connection_name):
