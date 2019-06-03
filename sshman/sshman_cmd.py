@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .Runner import Runner
+from .Exceptions import SSHConnectionNotFoundError
 import sys
 
 def main():
@@ -29,7 +30,8 @@ def main():
             runner.connect(name)
     except (IndexError, AttributeError):
         print_help()
-        raise
+    except SSHConnectionNotFoundError as e:
+        print(e)
         
 
 def print_help():

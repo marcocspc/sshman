@@ -4,7 +4,8 @@ from .Dumper import SSHProfileDumper
 from . import SSH as ssh 
 from .Domain import SSHConnection
 from .Domain import SSHProfile
-from .Domain import PortForwarding 
+from .Domain import PortForwarding
+from .Exceptions import SSHConnectionNotFoundError
 
 class Runner:
     def __init__(self):
@@ -20,8 +21,10 @@ class Runner:
                 if connection.name == connection_name:
                     ssh_connection = connection 
                     break
-            
-            ssh.run(ssh_connection)
+            if ssh_connection != None: 
+                ssh.run(ssh_connection)
+            else:
+                raise SSHConnectionNotFoundError(connection_name + " does not exist.")
     
     def show_connection(self, connection_name):
         if self.ssh_profile == None:
