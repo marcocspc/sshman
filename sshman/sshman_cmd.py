@@ -1,34 +1,37 @@
 # -*- coding: utf-8 -*-
 
 from .Runner import Runner
+from .Exceptions import SSHConnectionNotFoundError
 import sys
 
 def main():
     runner = Runner()
-    if ('connect' in sys.argv and 
-        sys.argv[sys.argv.index('connect') + 1] != None):
-        name = sys.argv[sys.argv.index('connect') + 1]
-        runner.connect(name)
-    elif ('show' in sys.argv and 
-        sys.argv[sys.argv.index('show') + 1] != None):
-        name = sys.argv[sys.argv.index('show') + 1]
-        runner.show_connection(name)
-    elif 'add' in sys.argv:
-        runner.add_prompt()
-    elif ('remove' in sys.argv and 
-        sys.argv[sys.argv.index('remove') + 1] != None):
-        name = sys.argv[sys.argv.index('remove') + 1]
-        runner.remove(name)
-    elif 'list' in sys.argv:
-        runner.list()
-    elif 'help' in sys.argv:
-        print_help()
-    else:
-        try:
+    try:
+        if ('connect' in sys.argv and 
+            sys.argv[sys.argv.index('connect') + 1] != None):
+            name = sys.argv[sys.argv.index('connect') + 1]
+            runner.connect(name)
+        elif ('show' in sys.argv and 
+            sys.argv[sys.argv.index('show') + 1] != None):
+            name = sys.argv[sys.argv.index('show') + 1]
+            runner.show_connection(name)
+        elif 'add' in sys.argv:
+            runner.add_prompt()
+        elif ('remove' in sys.argv and 
+            sys.argv[sys.argv.index('remove') + 1] != None):
+            name = sys.argv[sys.argv.index('remove') + 1]
+            runner.remove(name)
+        elif 'list' in sys.argv:
+            runner.list()
+        elif 'help' in sys.argv:
+            print_help()
+        else:
             name = sys.argv[1]
             runner.connect(name)
-        except (IndexError, AttributeError):
-            print_help()
+    except (IndexError, AttributeError):
+        print_help()
+    except SSHConnectionNotFoundError as e:
+        print(e)
         
 
 def print_help():
