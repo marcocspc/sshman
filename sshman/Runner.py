@@ -52,13 +52,12 @@ class Runner:
         self.ssh_profile.profiles.append(new_ssh)
         self.dumper.save(self.ssh_profile)
 
-        
-    
-    def add_prompt(self):
+    def add_prompt(self, name = None):
         if self.ssh_profile == None:
             self.ssh_profile = SSHProfile()
 
-        name = get_string_input("Insert connection name:", "new_connection")
+        if name == None:
+            name = get_string_input("Insert connection name:", "new_connection")
 
         user = input("Insert username: ")
         if user == None or user == "":

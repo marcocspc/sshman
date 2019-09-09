@@ -31,13 +31,11 @@ Where \<connection-nam\> is, well, the connection name.
 
 `sshman show <connection-name>`
 
-Where \<connection-name\> is, well, the connection name.
+Where \<connection-name\>...
 
 ## Remove connection
 
 `sshman remove <connection-name>` 
-
-Where \<connection-name\>... I believe that, at this point, I don't need to tell you what that means. :P
 
 ## Help
 
@@ -48,3 +46,12 @@ Or just:
 `sshman`
 
 Will print a quick help text.
+
+## TODO
+
+- Add option to edit an existing connection;
+- Allow user to connect using a connection number. If no number or connection name is given, prompt;
+- List connections with a number on it's side, so the user knows which number to use when starting a connection;
+- Add connection number on 'show' command;
+- Add 'reorder' command, to reorder connections alphabetically;
+- Add option to insert a new connection using ssh syntax. Ex.: 'ssh user@host -i key_address -L localport1:remote_address1:remote_port1 -L localport2:remote_address2:remote_port2 -L etc".

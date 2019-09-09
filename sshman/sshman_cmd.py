@@ -16,7 +16,11 @@ def main():
             name = sys.argv[sys.argv.index('show') + 1]
             runner.show_connection(name)
         elif 'add' in sys.argv:
-            runner.add_prompt()
+            pos = sys.argv.index('add') + 1
+            if sys.argv[pos] != None:
+                runner.add_prompt(sys.argv[pos])
+            else:
+                runner.add_prompt()
         elif ('remove' in sys.argv and 
             sys.argv[sys.argv.index('remove') + 1] != None):
             name = sys.argv[sys.argv.index('remove') + 1]
