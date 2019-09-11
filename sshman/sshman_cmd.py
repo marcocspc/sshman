@@ -21,6 +21,12 @@ def main():
                 runner.add_prompt(sys.argv[pos])
             else:
                 runner.add_prompt()
+        elif ('edit' in sys.argv and 
+            sys.argv[sys.argv.index('remove') + 1] != None):
+            if sys.argv[pos] != None:
+                runner.edit_prompt(sys.argv[pos])
+            else:
+                runner.edit_prompt()
         elif ('remove' in sys.argv and 
             sys.argv[sys.argv.index('remove') + 1] != None):
             name = sys.argv[sys.argv.index('remove') + 1]

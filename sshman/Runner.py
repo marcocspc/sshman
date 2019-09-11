@@ -97,6 +97,42 @@ class Runner:
         self.add(name, forwardings, ssh_key, user, 
             server_url, ssh_port)
 
+    def edit_prompt(self, name = None):
+        if self.ssh_profile == None:
+            print("There are no SSH Connections set.")
+        else:
+            if name == None:
+                print(self.ssh_profile, end="")
+
+                name = get_string_input("Select one connection: ", "None")
+
+            if name != "None":
+                old_ssh = name
+
+                #TODO prompt user for new information
+
+
+    def edit(self, connection_name, new_name, forwardings, ssh_key,
+        user, server_url, ssh_port):
+        if self.ssh_profile == None:
+            print("There are no SSH Connections set.")
+        else:
+            old_ssh = 0
+
+            for connection in self.ssh_profile.profiles:
+                if connection.name == connection_name:
+                    break
+                old_ssh += 1
+
+            new_ssh = SSHConnection(new_name, user, server_url, 
+                ssh_port, key_path)
+
+            for fwd in fwd_list:
+                new_ssh.forwardings.append(fwd)
+            
+            self.ssh_profile.profiles[old_ssh] = new_ssh
+            self.dumper.save(self.ssh_profile)
+
     def remove(self, connection_name):
         if self.ssh_profile == None:
             print("There are no SSH Connections set.")
