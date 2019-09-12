@@ -130,46 +130,69 @@ class Runner:
                     else:
                         new_ssh.user = old_ssh.user
 
-                    server_url = input("Insert Server URL: ")
-                    if server_url == None or server_url == "":
+                    server_url = get_string_input("Insert Server URL: ", old_ssh.server_url)
+                    if server_url != None and server_url != "":
                         new_ssh.server_url = server_url
                     else:
                         new_ssh.server_url = old_ssh.server_url
                    
-                    ssh_port = 22
-                    option = get_string_input("Will you change the default SSH port? [y/n]", "n")
+                    option = get_string_input("Will you change the SSH port? [y/n]", "n")
                     if str.lower(option) == "y":
-                        ssh_port = get_int_input("Insert SSH port: ", 22)
+                        ssh_port = get_int_input("Insert SSH port: ", old_ssh.ssh_port)
+                        if (ssh_port != None and ssh_port != ""):
+                            new_ssh.ssh_port = ssh_port
+                        else:
+                            new_ssh.ssh_port = old_ssh.ssh_port
 
-                    ssh_key = None
-                    option = get_string_input("Will you use ssh private key? [y/n]", "n")
+                    option = get_string_input("Will you change the ssh private key? [y/n]", "n")
                     if str.lower(option) == "y":
-                        ssh_key = input("Insert SSH key path: ")
+                        ssh_key = get_string_input("Insert a new SSH key path: ", old_ssh.key_path)
+                        if (ssh_key != None and ssh_key != ""):
+                            new_ssh.key_path = ssh_key
+                        else:
+                            new_ssh.key_path = old_ssh.key_path
                     
                     local_port, dest_ip_dns, dest_port = None, None, None
-                    option = get_string_input("Will you use port forwarding? [y/n]", "n")
-                    forwardings = []
+                    option = get_string_input("Will you edit port forwardings? [y/n]", "n")
+                    
+                    new_ssh.forwardings = old_ssh.forwardings
 
                     while(str.lower(option) == "y"):
-                        local_port = input("Insert local port: ")
-                        dest_ip_dns = input("Insert destination URL: ")
-                        dest_port = input("Insert destination port: ") 
+                        print("Available forwardings:")
+                        print()
 
-                        fwd = PortForwarding(local_port, dest_ip_dns,
-                                dest_port)
-                        forwardings.append(fwd)
+                        count = 0
+                        for fwd in new_ssh.forwardings:
+                            print(str(count + 1) + " - " +
+                                   str(fwd.fwd_local_port) + ":" +
+                                   str(fwd.fwd_dest_ip_dns) + ":" +
+                                   str(fwd.fwd_dest_port))
+                                    )
+                            count += 1
 
-                        option = get_string_input("Will you add another port forwarding? [y/n]", "n")
+                        option = get_int_input("Which one will you edit?", -1)
 
-                    self.add(name, forwardings, ssh_key, user, 
-                        server_url, ssh_port)
+                        if option > -1:
+                            local_port = input("Insert a new local port: ")
+                            dest_ip_dns = input("Insert a new destination URL: ")
+                            dest_port = input("Insert a new destination port: ") 
+
+                            fwd = PortForwarding(local_port, dest_ip_dns,
+                                    dest_port)
+                            new_ssh.forwardings[option] = fwd
+
+                        option = get_string_input("Keep editing port forwardings? [y/n]", "n")
+
+                    self.edit(old_ssh.name, new_ssh.name, new_ssh.forwardings, 
+                            new_ssh.key_path, new_ssh.user, 
+                        new_ssh.server_url, new_ssh.ssh_port)
                    
                 else:
                     print("Connection not found.")
 
 
 
-    def edit(self, connection_name, new_name, forwardings, ssh_key,
+    def edit(self, connection_name, new_name, fwd_list, ssh_key,
         user, server_url, ssh_port):
         if self.ssh_profile == None:
             print("There are no SSH Connections set.")
