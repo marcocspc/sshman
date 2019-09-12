@@ -22,7 +22,8 @@ def main():
             else:
                 runner.add_prompt()
         elif ('edit' in sys.argv and 
-            sys.argv[sys.argv.index('remove') + 1] != None):
+            sys.argv[sys.argv.index('edit') + 1] != None):
+            pos = sys.argv.index('edit') + 1
             if sys.argv[pos] != None:
                 runner.edit_prompt(sys.argv[pos])
             else:
@@ -54,6 +55,8 @@ def print_help():
         "Lists all connections available.\n\n" +
         "sshman add\n" +
         "Will prompt data for a new connection.\n\n" +
+        "sshman edit <name>\n" +
+        "Will prompt to update connection <name> parameters.\n\n"
         "sshman remove <name>\n" +
         "Removes connection <name>.\n\n" +
         "sshman help\n" +

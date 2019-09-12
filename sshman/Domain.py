@@ -14,11 +14,7 @@ class SSHProfile:
         return string
 
 class SSHConnection:
-    def __init__(self, name, user, 
-        server_url, ssh_port = 22, key_path = None,
-        fwd_local_port = None, fwd_dest_ip_dns = None, 
-        fwd_dest_port = None):
-
+    def __init__(self, name, user, server_url, ssh_port = 22, key_path = None):
         self.name = name
         self.key_path = key_path
         self.user = user

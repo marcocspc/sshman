@@ -113,7 +113,12 @@ class Runner:
                 for connection in self.ssh_profile.profiles:
                     if connection.name == old_ssh:
                         old_ssh = connection
-                        new_ssh = SSHConnection()
+                        new_ssh = SSHConnection(old_ssh.name, old_ssh.user, 
+                                old_ssh.server_url)
+                        new_ssh.ssh_port = old_ssh.ssh_port
+                        new_ssh.key_path = old_ssh.key_path
+                        new_ssh.forwardings = old_ssh.forwardings
+
                         break
 
                 if old_ssh != None:
@@ -167,7 +172,6 @@ class Runner:
                                    str(fwd.fwd_local_port) + ":" +
                                    str(fwd.fwd_dest_ip_dns) + ":" +
                                    str(fwd.fwd_dest_port))
-                                    )
                             count += 1
 
                         option = get_int_input("Which one will you edit?", -1)
@@ -205,7 +209,7 @@ class Runner:
                 old_ssh += 1
 
             new_ssh = SSHConnection(new_name, user, server_url, 
-                ssh_port, key_path)
+                ssh_port, ssh_key)
 
             for fwd in fwd_list:
                 new_ssh.forwardings.append(fwd)
