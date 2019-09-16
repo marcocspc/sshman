@@ -7,9 +7,11 @@ class SSHProfile:
     
     def __str__(self):
         string = ""
+        cont = 1
         for sshprofile in self.profiles:
-            string += sshprofile.name 
+            string += str(cont) + " - " + sshprofile.name 
             string += "\n"
+            cont += 1
         
         return string
 

@@ -49,9 +49,14 @@ Will print a quick help text.
 
 ## TODO
 
-- Add option to edit an existing connection;
-- Allow user to connect using a connection number. If no number or connection name is given, prompt;
-- List connections with a number on it's side, so the user knows which number to use when starting a connection;
+### v0.3
+
+- Add option to edit an existing connection; DONE
+- Allow user to connect using a connection number. If no number or connection name is given, prompt; DONE
+- Allow user to user to do the same as above with remove, show and edit; (edit needs to be fixed)
+- List connections with a number on it's side, so the user knows which number to use when starting a connection; DONE
 - Add connection number on 'show' command;
 - Add 'reorder' command, to reorder connections alphabetically;
 - Add option to insert a new connection using ssh syntax. Ex.: 'ssh user@host -i key_address -L localport1:remote_address1:remote_port1 -L localport2:remote_address2:remote_port2 -L etc".
+- Update README.md to show how to install and include Python 3 as a requirement;
+- Update README.md to match changes.

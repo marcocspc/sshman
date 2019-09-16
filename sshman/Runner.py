@@ -11,16 +11,34 @@ class Runner:
     def __init__(self):
         self.dumper = SSHProfileDumper()
         self.ssh_profile = self.dumper.load()
+
+    def list_and_prompt(self):
+        self.list()
+        option = get_string_input("\nInsert name or number: ", "None")
+
+        if option != "None" and option != None and option != "":
+            return option
+        else:
+            raise Exception("No connection name or number was given.")
+
+    def connect_prompt(self):
+        connection = self.list_and_prompt()
+        self.connect(connection)
     
     def connect(self, connection_name):
         if self.ssh_profile == None:
             print("There are no SSH Connections set.")
         else:
             ssh_connection = None
-            for connection in self.ssh_profile.profiles:
-                if connection.name == connection_name:
-                    ssh_connection = connection 
-                    break
+
+            if connection_name.isdigit():
+                ssh_connection = self.ssh_profile.profiles[int(connection_name) - 1]
+            else:
+                for connection in self.ssh_profile.profiles:
+                    if connection.name == connection_name:
+                        ssh_connection = connection 
+                        break
+
             if ssh_connection != None: 
                 ssh.run(ssh_connection)
             else:

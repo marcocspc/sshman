@@ -7,10 +7,12 @@ import sys
 def main():
     runner = Runner()
     try:
-        if ('connect' in sys.argv and 
-            sys.argv[sys.argv.index('connect') + 1] != None):
-            name = sys.argv[sys.argv.index('connect') + 1]
-            runner.connect(name)
+        if ('connect' in sys.argv):
+            try:
+                name_or_number = sys.argv[sys.argv.index('connect') + 1]
+                runner.connect(name_or_number)
+            except IndexError:
+                runner.connect_prompt()
         elif ('show' in sys.argv and 
             sys.argv[sys.argv.index('show') + 1] != None):
             name = sys.argv[sys.argv.index('show') + 1]
