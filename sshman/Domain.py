@@ -1,4 +1,4 @@
-from .Errors import InvalidSSHConnectionAttribute
+from .Errors import InvalidSSHConnectionAttribute, UserOrHostnameNotInformed
 from .Colors import Color
 
 class SSHProfile:
@@ -23,6 +23,23 @@ class SSHConnection:
         self.server_url = server_url
         self.ssh_port = ssh_port
         self.forwardings = []
+
+    @classmethod
+    def from_ssh_cmd(cls, ssh_cmd):
+        #split everything
+        ssh_cmd = ssh_cmd.split(' ')
+
+        try:
+            #search for user@host
+            at = [s for s in ssh_cmd if "@" in s]
+            (user, host) = at.split('@')
+
+            #TODO: continue this
+        except ValueError:
+            raise UserOrHostnameNotInformed("Please input username and host as user@host.")
+
+
+
 
     def get_ssh_command(self):
         if (self.name == None or self.user == None
