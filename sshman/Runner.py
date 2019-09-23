@@ -44,15 +44,30 @@ class Runner:
             else:
                 raise SSHConnectionNotFoundError(connection_name + " does not exist.")
     
+    def show_prompt(self):
+        connection = self.list_and_prompt()
+        self.show_connection(connection)
+
     def show_connection(self, connection_name):
         if self.ssh_profile == None:
             print("There are no SSH Connections set.")
         else:
-            for connection in self.ssh_profile.profiles:
-                if connection.name == connection_name:
-                    print(connection)
-                    break
-        
+            ssh_connection = None
+
+            if connection_name.isdigit():
+                ssh_connection = self.ssh_profile.profiles[int(connection_name) - 1]
+            else:
+                for connection in self.ssh_profile.profiles:
+                    if connection.name == connection_name:
+                        ssh_connection = connection 
+                        break
+
+            if ssh_connection != None: 
+                print("--- Index: " + str(self.ssh_profile.profiles.index(ssh_connection)))
+                print(ssh_connection)
+            else:
+                raise SSHConnectionNotFoundError(connection_name + " does not exist.")
+       
     def list(self):
         if self.ssh_profile == None:
             print("There are no SSH Connections set.")
@@ -120,27 +135,27 @@ class Runner:
             print("There are no SSH Connections set.")
         else:
             if name == None:
-                print(self.ssh_profile, end="")
-
-                name = get_string_input("Select one connection: ", "None")
+                name = self.list_and_prompt() 
 
             if name != "None":
                 old_ssh = name
                 new_ssh = None
 
-                for connection in self.ssh_profile.profiles:
-                    if connection.name == old_ssh:
-                        old_ssh = connection
-                        new_ssh = SSHConnection(old_ssh.name, old_ssh.user, 
-                                old_ssh.server_url)
-                        new_ssh.ssh_port = old_ssh.ssh_port
-                        new_ssh.key_path = old_ssh.key_path
-                        new_ssh.forwardings = old_ssh.forwardings
+                if old_ssh.isdigit():
+                    old_ssh = self.ssh_profile.profiles[int(old_ssh) - 1]
+                else:
+                    for connection in self.ssh_profile.profiles:
+                        if connection.name == old_ssh:
+                            old_ssh = connection
+                            new_ssh = SSHConnection(old_ssh.name, old_ssh.user, 
+                                    old_ssh.server_url)
+                            new_ssh.ssh_port = old_ssh.ssh_port
+                            new_ssh.key_path = old_ssh.key_path
+                            new_ssh.forwardings = old_ssh.forwardings
 
-                        break
+                            break
 
                 if old_ssh != None:
-                    #TODO prompt user for new information
                     new_name = get_string_input("Insert a new connection name:", old_ssh.name)
                     if new_name != None and new_name != "":
                         new_ssh.name = new_name
@@ -244,6 +259,26 @@ class Runner:
                     self.ssh_profile.profiles.remove(connection)
                     self.dumper.save(self.ssh_profile)
                     break
+
+    def reorder(self):
+        print("Arranging SSH Profiles in alphabetical order... ", end="")
+        names_list = []
+
+        for profile in self.ssh_profile.profiles:
+            names_list.append(profile.name)
+
+        names_list.sort()
+
+        new_profile_list = []
+
+        for name in names_list:
+            for profile in self.ssh_profile.profiles:
+                if profile.name == name:
+                    new_profile_list.append(profile)
+
+        self.ssh_profile.profiles = new_profile_list
+        self.dumper.save(self.ssh_profile)
+        print("Done.")
 
 #aux functions
 def get_int_input (message, default_value):

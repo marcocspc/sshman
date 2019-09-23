@@ -7,28 +7,29 @@ import sys
 def main():
     runner = Runner()
     try:
-        if ('connect' in sys.argv):
+        if 'connect' in sys.argv:
             try:
                 name_or_number = sys.argv[sys.argv.index('connect') + 1]
                 runner.connect(name_or_number)
             except IndexError:
                 runner.connect_prompt()
-        elif ('show' in sys.argv and 
-            sys.argv[sys.argv.index('show') + 1] != None):
-            name = sys.argv[sys.argv.index('show') + 1]
-            runner.show_connection(name)
+        elif 'show' in sys.argv:
+            try:
+                name_or_number = sys.argv[sys.argv.index('show') + 1]
+                runner.show(name_or_number)
+            except IndexError:
+                runner.show_prompt()
         elif 'add' in sys.argv:
             pos = sys.argv.index('add') + 1
             if sys.argv[pos] != None:
                 runner.add_prompt(sys.argv[pos])
             else:
                 runner.add_prompt()
-        elif ('edit' in sys.argv and 
-            sys.argv[sys.argv.index('edit') + 1] != None):
-            pos = sys.argv.index('edit') + 1
-            if sys.argv[pos] != None:
-                runner.edit_prompt(sys.argv[pos])
-            else:
+        elif 'edit' in sys.argv:
+            try:
+                name_or_number = sys.argv[sys.argv.index('edit') + 1]
+                runner.edit_prompt(name_or_number)
+            except IndexError:
                 runner.edit_prompt()
         elif ('remove' in sys.argv and 
             sys.argv[sys.argv.index('remove') + 1] != None):
@@ -36,6 +37,8 @@ def main():
             runner.remove(name)
         elif 'list' in sys.argv:
             runner.list()
+        elif 'reorder' in sys.argv:
+            runner.reorder()
         elif 'help' in sys.argv:
             print_help()
         else:
