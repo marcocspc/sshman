@@ -1,5 +1,6 @@
 from .Errors import InvalidSSHConnectionAttribute, UserOrHostnameNotInformed
 from .Colors import Color
+import re
 
 class SSHProfile:
     def __init__(self):
@@ -31,8 +32,9 @@ class SSHConnection:
 
         try:
             #search for user@host
-            at = [s for s in ssh_cmd if "@" in s]
-            (user, host) = at.split('@')
+            regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+            at = [s for s in ssh_cmd if re.search(regex, s)]
+            (user, host) = at[0].split('@')
 
             #TODO: continue this
         except ValueError:
