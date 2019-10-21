@@ -5,7 +5,7 @@ from . import SSH as ssh
 from .Domain import SSHConnection
 from .Domain import SSHProfile
 from .Domain import PortForwarding
-from .Exceptions import SSHConnectionNotFoundError
+from .Errors import SSHConnectionNotFoundError
 
 class Runner:
     def __init__(self):

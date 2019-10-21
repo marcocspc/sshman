@@ -3,7 +3,16 @@ A simple ssh connection manager written in Python.
 
 # Needed
 
-You need OpenSSH client installed on your system. sshman will check for the existence of ssh binary.
+- You need Python 3 installed on your system;
+- You need OpenSSH client installed on your system. sshman will check for the existence of ssh binary.
+
+# Installation
+
+If you have system-wide permissions, use:
+`pip3 install sshman`
+
+If you want to install just for yourself (without administrative privileges), use:
+`pip3 install sshman --user`
 
 # Usage
 
@@ -11,9 +20,25 @@ You need OpenSSH client installed on your system. sshman will check for the exis
 
 To add a new connection, type:
 
-`sshman add`
+`sshman add` or `sshman add <connection-name>`
 
-Then press ENTER. sshman will prompt for connection name, user, password and other needed information.
+You can replace 
+
+Then press ENTER. sshman will prompt for needed info.
+
+You can still use ssh syntax, like this:
+
+`sshman add <connection-name> ssh user@host`
+
+Or even: 
+
+`sshman add <connection-name> ssh user@host -i /path/to/your/key`
+
+Another way would be:
+
+`sshman add <connection-name> ssh user@host -i /path/to/your/key -L port:remote-address:remote_port -L another:port:forwarding` 
+
+If you want to use this mode, remember always to use \<connection-name\>.
 
 ## Connect to existing connection
 
@@ -58,6 +83,6 @@ Will print a quick help text.
 - Add connection number on 'show' command; DONE
 - Add 'reorder' command, to reorder connections alphabetically; DONE
 - Add option to insert a new connection using ssh syntax. Ex.: 'ssh user@host -i key_address -L localport1:remote_address1:remote_port1 -L localport2:remote_address2:remote_port2 -L etc"; DONE
-- Allow user to quick input commands by their first letters. For example: 'sshman a' will be the same as 'sshan add', 'sshman c' will be the same as 'sshman connect', etc;
+- Allow user to quick input commands by their first letters. For example: 'sshman a' will be the same as 'sshan add', 'sshman c' will be the same as 'sshman connect', etc; DONE
 - Update README.md to show how to install and include Python 3 as a requirement;
 - Update README.md to match changes.

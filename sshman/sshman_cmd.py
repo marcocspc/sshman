@@ -6,6 +6,27 @@ import sys
 
 def main():
     runner = Runner()
+
+    #if structure to allow user to call commands using initials
+    #For example: c will connect, rm will remove, etc
+    if 'c' in sys.argv:
+        sys.argv[sys.argv.index('c')] = 'connect'
+    elif 'e' in sys.argv:
+        sys.argv[sys.argv.index('e')] = 'edit'
+    elif 's' in sys.argv:
+        sys.argv[sys.argv.index('s')] = 'show'
+    elif 'a' in sys.argv:
+        sys.argv[sys.argv.index('a')] = 'add'
+    elif 'rm' in sys.argv:
+        sys.argv[sys.argv.index('rm')] = 'remove'
+    elif 'ro' in sys.argv:
+        sys.argv[sys.argv.index('ro')] = 'reorder'
+    elif 'h' in sys.argv:
+        sys.argv[sys.argv.index('h')] = 'help'
+    elif 'l' in sys.argv:
+        sys.argv[sys.argv.index('l')] = 'list'
+
+
     try:
         if 'connect' in sys.argv:
             try:
@@ -30,7 +51,6 @@ def main():
                 else:
                     runner.add_prompt(sys.argv[pos])
             except IndexError:
-                raise
                 runner.add_prompt()
         elif 'edit' in sys.argv:
             try:
