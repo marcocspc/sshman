@@ -1,6 +1,5 @@
 from .Errors import InvalidSSHConnectionAttribute, UserOrHostnameNotInformed
 from .Colors import Color
-import re
 
 class SSHProfile:
     def __init__(self):
@@ -26,17 +25,53 @@ class SSHConnection:
         self.forwardings = []
 
     @classmethod
-    def from_ssh_cmd(cls, ssh_cmd):
+    def from_ssh_cmd(cls, name, ssh_cmd):
         #split everything
-        ssh_cmd = ssh_cmd.split(' ')
+        if ' ' in ssh_cmd:
+            ssh_cmd = ssh_cmd.split(' ')
 
         try:
             #search for user@host
-            regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-            at = [s for s in ssh_cmd if re.search(regex, s)]
-            (user, host) = at[0].split('@')
+            at = ''
+            print(ssh_cmd)
+            for s in ssh_cmd:
+                if '@' in s:
+                    at = s
+                    break
+            at = at.split('@')
+            (user, host) = (at[0],at[1])
 
-            #TODO: continue this
+            #add key if needed
+            key = None
+            exp = '-i'
+            if exp in ssh_cmd:
+                index = ssh_cmd.index(exp)
+                key = ssh_cmd[index + 1]
+            
+            #change port if needed
+            ssh_port = 22
+            exp = '-p'
+            if exp in ssh_cmd:
+                index = ssh_cmd.index(exp)
+                ssh_port = int(ssh_cmd[index + 1]) 
+
+            #create ssh_connection
+            conn = cls(name=name, user=user, 
+                    server_url=host, ssh_port=ssh_port, 
+                    key_path=key)
+
+            #add port forwardings if needed
+            for item in ssh_cmd:
+                if item == '-L':
+                    index = ssh_cmd.index(item)
+                    item = ssh_cmd[index + 1].split(':')
+
+                    conn.forwardings.append(PortForwarding(item[0], item[1], item[2]))
+                    ssh_cmd.pop(index)
+                    ssh_cmd.pop(index)
+
+            #return created ssh_connection
+            return conn
         except ValueError:
             raise UserOrHostnameNotInformed("Please input username and host as user@host.")
 

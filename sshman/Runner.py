@@ -63,7 +63,7 @@ class Runner:
                         break
 
             if ssh_connection != None: 
-                print("--- Index: " + str(self.ssh_profile.profiles.index(ssh_connection)))
+                print("--- Index: " + str(self.ssh_profile.profiles.index(ssh_connection) + 1))
                 print(ssh_connection)
             else:
                 raise SSHConnectionNotFoundError(connection_name + " does not exist.")
@@ -129,6 +129,11 @@ class Runner:
 
         self.add(name, forwardings, ssh_key, user, 
             server_url, ssh_port)
+
+    def add_cmd(self, name, ssh_cmd):
+        connection = SSHConnection.from_ssh_cmd(name, ssh_cmd)
+        self.ssh_profile.profiles.append(connection)
+        self.dumper.save(self.ssh_profile)
 
     def edit_prompt(self, name = None):
         if self.ssh_profile == None:

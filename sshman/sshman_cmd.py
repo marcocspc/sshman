@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .Runner import Runner
-from .Exceptions import SSHConnectionNotFoundError
+from .Errors import SSHConnectionNotFoundError, SSHConnectionNameNotInformed
 import sys
 
 def main():
@@ -16,14 +16,21 @@ def main():
         elif 'show' in sys.argv:
             try:
                 name_or_number = sys.argv[sys.argv.index('show') + 1]
-                runner.show(name_or_number)
+                runner.show_connection(name_or_number)
             except IndexError:
                 runner.show_prompt()
         elif 'add' in sys.argv:
-            pos = sys.argv.index('add') + 1
-            if sys.argv[pos] != None:
-                runner.add_prompt(sys.argv[pos])
-            else:
+            try:
+                pos = sys.argv.index('add') + 1
+                if 'ssh' in sys.argv[pos:]:
+                    if sys.argv.index('ssh') == pos:
+                        raise SSHConnectionNameNotInformed("Please input a connection name to use this mode.")
+                    elif sys.argv.index('ssh') == pos + 1:
+                        runner.add_cmd(sys.argv[pos], sys.argv[pos + 1:])
+                else:
+                    runner.add_prompt(sys.argv[pos])
+            except IndexError:
+                raise
                 runner.add_prompt()
         elif 'edit' in sys.argv:
             try:

@@ -14,3 +14,17 @@ class UserOrHostnameNotInformed(Exception):
         a new connection
     """
 pass
+
+class SSHConnectionNotFoundError(Exception):
+    """
+       Raised when an SSHConnection was not found
+    """
+pass
+
+class SSHConnectionNameNotInformed(Exception):
+    """
+        Raised when a name was not informed 
+        when trying to add a new connection
+    """
+pass
+
