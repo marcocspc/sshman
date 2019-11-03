@@ -82,6 +82,7 @@ Or even just:
 ### v0.4
 
 - Add support for SCP;
+- Add option to print ssh command to given connection;
 
 ### v0.3 DONE
 
