@@ -81,18 +81,19 @@ Or even just:
 
 ### v0.4
 
-- Add support for SCP;
-- Add option to print ssh command to given connection;
+- [ ] Add support for SCP via copy (cp) command;
+- [ ] Add option to print ssh command to given connection;
+- [ ] Update help command.
 
-### v0.3 DONE
+### v0.3 
 
-- Add option to edit an existing connection; DONE
-- Allow user to connect using a connection number. If no number or connection name is given, prompt; DONE
-- Allow user to user to do the same as above with remove, show and edit; DONE
-- List connections with a number on it's side, so the user knows which number to use when starting a connection; DONE
-- Add connection number on 'show' command; DONE
-- Add 'reorder' command, to reorder connections alphabetically; DONE
-- Add option to insert a new connection using ssh syntax. Ex.: 'ssh user@host -i key_address -L localport1:remote_address1:remote_port1 -L localport2:remote_address2:remote_port2 -L etc"; DONE
-- Allow user to quick input commands by their first letters. For example: 'sshman a' will be the same as 'sshan add', 'sshman c' will be the same as 'sshman connect', etc; DONE
-- Update README.md to show how to install and include Python 3 as a requirement; DONE
-- Update README.md to match changes. DONE
+- [x] Add option to edit an existing connection; 
+- [x] Allow user to connect using a connection number. If no number or connection name is given, prompt; 
+- [x] Allow user to user to do the same as above with remove, show and edit; 
+- [x] List connections with a number on it's side, so the user knows which number to use when starting a connection; 
+- [x] Add connection number on 'show' command; 
+- [x] Add 'reorder' command, to reorder connections alphabetically; 
+- [x] Add option to insert a new connection using ssh syntax. Ex.: 'ssh user@host -i key_address -L localport1:remote_address1:remote_port1 -L localport2:remote_address2:remote_port2 -L etc"; 
+- [x] Allow user to quick input commands by their first letters. For example: 'sshman a' will be the same as 'sshan add', 'sshman c' will be the same as 'sshman connect', etc; 
+- [x] Update README.md to show how to install and include Python 3 as a requirement; 
+- [x] Update README.md to match changes. 
