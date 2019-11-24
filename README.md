@@ -81,9 +81,10 @@ Or even just:
 
 ### v0.4
 
-- [ ] Add support for SCP via copy (cp) command;
+- [ ] Add support for SCP via upload and download commands;
 - [ ] Add option to print ssh command to given connection;
-- [ ] Update help command.
+- [ ] Update help command;
+- [ ] Update README.md to match changes. 
 
 ### v0.3 
 
