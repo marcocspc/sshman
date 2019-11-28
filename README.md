@@ -84,7 +84,8 @@ Or even just:
 - [ ] Add support for SCP via upload and download commands;
 - [ ] Add option to print ssh command to given connection;
 - [ ] Update help command;
-- [ ] Update README.md to match changes. 
+- [ ] Update README.md to match changes; 
+- [ ] Allow user to check if host is up using command "check", and to keep watching using -w.
 
 ### v0.3 
 
