@@ -29,6 +29,8 @@ def main():
         sys.argv[sys.argv.index('ls')] = 'list'
     elif 'cp' in sys.argv:
         sys.argv[sys.argv.index('cp')] = 'copy'
+    elif 'cpr' in sys.argv:
+        sys.argv[sys.argv.index('cpr')] = 'copy-recursive'
 
     try:
         if 'connect' in sys.argv:
@@ -69,11 +71,21 @@ def main():
             runner.list()
         elif 'reorder' in sys.argv:
             runner.reorder()
-        elif 'copy' in sys.argv:
-            idx = sys.argv.index('copy') 
+        elif 'copy' in sys.argv or 'copy-recursive' in sys.argv:
+            idx = -1
+            r = None
+            try: 
+                idx = sys.argv.index('copy') 
+            except ValueError as ve:
+                if "'copy' is not in list" in str(ve): 
+                    idx = sys.argv.index('copy-recursive') 
+                    r = True
+                else:
+                    raise
+
             fileA = sys.argv[idx + 1] 
             fileB = sys.argv[idx + 2] 
-            runner.copy(fileA, fileB)
+            runner.copy(fileA, fileB, r=r)
         elif 'help' in sys.argv:
             print_help()
         else:
@@ -104,5 +116,9 @@ def print_help():
         "Downloads file <file_path> from server <name> to <local_destination_path>.\n\n" +
         "sshman copy (or sshman cp) <local_file_path> <name>:<remote_destination_path>\n" +
         "Uploads file <local_file_path> to server <name> into <remote_destination_path>.\n\n" +
+        "sshman copy-recursive (or sshman cpr) <name>:<remote_dir_path> <local_destination_path>\n" +
+        "Downloads directory <remote_dir_path> recursively from server <name> to <local_destination_path>.\n\n" +
+        "sshman copy-recursive (or sshman cpr) <local_dir_path> <name>:<remote_destination_path>\n" +
+        "Uploads directory <local_file_path> recursively to server <name> into <remote_destination_path>.\n\n" +
         "sshman help (or sshman h)\n" +
         "Prints this message.")

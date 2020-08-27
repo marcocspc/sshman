@@ -27,6 +27,7 @@ class SSHConnection:
         self.local_file = None
         self.remote_file = None
         self.scp_operation = None
+        self.recursive_scp = False
 
 
     @classmethod
@@ -80,10 +81,11 @@ class SSHConnection:
         except ValueError:
             raise UserOrHostnameNotInformed("Please input username and host as user@host.")
 
-    def set_scp_operation(self, remote_file, local_file, operation):
+    def set_scp_operation(self, remote_file, local_file, operation, r=None):
         self.remote_file = remote_file
         self.local_file = local_file 
         self.scp_operation = operation
+        if r: self.recursive_scp = True
 
     def get_scp_command(self):
         if (self.name == None or self.user == None
@@ -91,6 +93,9 @@ class SSHConnection:
              raise InvalidSSHConnectionAttribute("SSHConnection's Name, User or Server URL not set")
         else:
             cmd = ["scp"]
+
+            if self.recursive_scp:
+                cmd += ['-r']
 
             if (self.key_path != None):
                 cmd += ["-i", self.key_path]
@@ -102,10 +107,13 @@ class SSHConnection:
                 cmd += [self.local_file, self.user + "@" + self.server_url + ':' + self.remote_file]
             else:
                 cmd += [self.user + "@" + self.server_url + ':' + self.remote_file, self.local_file]
+
            
             self.local_file = None
             self.remote_file = None
             self.scp_operation = None
+            self.recursive_scp = False 
+
             return cmd
 
     def get_ssh_command(self):

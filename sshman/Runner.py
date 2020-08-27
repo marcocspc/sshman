@@ -289,7 +289,7 @@ class Runner:
         self.dumper.save(self.ssh_profile)
         print("Done.")
 
-    def copy(self, fileA, fileB):
+    def copy(self, fileA, fileB, r=None):
         ssh_connection = None
         connection_name = None
         remote_file = None
@@ -312,7 +312,7 @@ class Runner:
                 ssh_connection = connection 
                 break
 
-        ssh_connection.set_scp_operation(remote_file, local_file, operation)
+        ssh_connection.set_scp_operation(remote_file, local_file, operation, r=r)
         ssh.scp(ssh_connection)
 
 #aux functions
