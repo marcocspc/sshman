@@ -152,15 +152,18 @@ class Runner:
                     for connection in self.ssh_profile.profiles:
                         if connection.name == old_ssh:
                             old_ssh = connection
-                            new_ssh = SSHConnection(old_ssh.name, old_ssh.user, 
-                                    old_ssh.server_url)
-                            new_ssh.ssh_port = old_ssh.ssh_port
-                            new_ssh.key_path = old_ssh.key_path
-                            new_ssh.forwardings = old_ssh.forwardings
 
                             break
 
+
                 if old_ssh != None:
+
+                    new_ssh = SSHConnection(old_ssh.name, old_ssh.user, 
+                            old_ssh.server_url)
+                    new_ssh.ssh_port = old_ssh.ssh_port
+                    new_ssh.key_path = old_ssh.key_path
+                    new_ssh.forwardings = old_ssh.forwardings
+
                     new_name = get_string_input("Insert a new connection name:", old_ssh.name)
                     if new_name != None and new_name != "":
                         new_ssh.name = new_name
@@ -221,7 +224,7 @@ class Runner:
 
                             fwd = PortForwarding(local_port, dest_ip_dns,
                                     dest_port)
-                            new_ssh.forwardings[option] = fwd
+                            new_ssh.forwardings[option - 1] = fwd
 
                         option = get_string_input("Keep editing port forwardings? [y/n]", "n")
 
@@ -276,23 +279,50 @@ class Runner:
 
         new_profile_list = []
 
-        for name in names_list:
+        for i in names_list:
             for profile in self.ssh_profile.profiles:
                 if profile.name == name:
                     new_profile_list.append(profile)
+                    self.ssh_profile.profiles.remove(profile)
 
         self.ssh_profile.profiles = new_profile_list
         self.dumper.save(self.ssh_profile)
         print("Done.")
 
+    def copy(self, fileA, fileB):
+        ssh_connection = None
+        connection_name = None
+        remote_file = None
+        local_file = None
+        operation = None
+        if ':' in fileA: 
+            remote_file = fileA
+            local_file = fileB
+            operation = ssh.SCP_OPERATION_DOWNLOAD
+        else:
+            remote_file = fileB
+            local_file = fileA
+            operation = ssh.SCP_OPERATION_UPLOAD
+
+        connection_name = remote_file.split(':')[0]
+        remote_file = remote_file.split(':')[1]
+
+        for connection in self.ssh_profile.profiles:
+            if connection.name == connection_name:
+                ssh_connection = connection 
+                break
+
+        ssh_connection.set_scp_operation(remote_file, local_file, operation)
+        ssh.scp(ssh_connection)
+
 #aux functions
-def get_int_input (message, default_value):
+def get_int_input(message, default_value):
     try:
         return int(input(message + " [Default " + str(default_value) + "] "))
     except ValueError:
         return default_value
 
-def get_string_input (message, default_value):
+def get_string_input(message, default_value):
     try:
         string = str(input(message + " [Default " + str(default_value) + "] "))
         return string if string != "" else default_value

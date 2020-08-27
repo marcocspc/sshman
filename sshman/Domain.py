@@ -1,5 +1,6 @@
 from .Errors import InvalidSSHConnectionAttribute, UserOrHostnameNotInformed
 from .Colors import Color
+from . import SSH as ssh 
 
 class SSHProfile:
     def __init__(self):
@@ -23,6 +24,10 @@ class SSHConnection:
         self.server_url = server_url
         self.ssh_port = ssh_port
         self.forwardings = []
+        self.local_file = None
+        self.remote_file = None
+        self.scp_operation = None
+
 
     @classmethod
     def from_ssh_cmd(cls, name, ssh_cmd):
@@ -75,8 +80,33 @@ class SSHConnection:
         except ValueError:
             raise UserOrHostnameNotInformed("Please input username and host as user@host.")
 
+    def set_scp_operation(self, remote_file, local_file, operation):
+        self.remote_file = remote_file
+        self.local_file = local_file 
+        self.scp_operation = operation
 
+    def get_scp_command(self):
+        if (self.name == None or self.user == None
+             or self.server_url == None):
+             raise InvalidSSHConnectionAttribute("SSHConnection's Name, User or Server URL not set")
+        else:
+            cmd = ["scp"]
 
+            if (self.key_path != None):
+                cmd += ["-i", self.key_path]
+
+            if (self.ssh_port != 22):
+                cmd += ["-P", str(self.ssh_port)]
+
+            if self.scp_operation == ssh.SCP_OPERATION_UPLOAD:
+                cmd += [self.local_file, self.user + "@" + self.server_url + ':' + self.remote_file]
+            else:
+                cmd += [self.user + "@" + self.server_url + ':' + self.remote_file, self.local_file]
+           
+            self.local_file = None
+            self.remote_file = None
+            self.scp_operation = None
+            return cmd
 
     def get_ssh_command(self):
         if (self.name == None or self.user == None

@@ -25,7 +25,10 @@ def main():
         sys.argv[sys.argv.index('h')] = 'help'
     elif 'l' in sys.argv:
         sys.argv[sys.argv.index('l')] = 'list'
-
+    elif 'ls' in sys.argv:
+        sys.argv[sys.argv.index('ls')] = 'list'
+    elif 'cp' in sys.argv:
+        sys.argv[sys.argv.index('cp')] = 'copy'
 
     try:
         if 'connect' in sys.argv:
@@ -66,6 +69,11 @@ def main():
             runner.list()
         elif 'reorder' in sys.argv:
             runner.reorder()
+        elif 'copy' in sys.argv:
+            idx = sys.argv.index('copy') 
+            fileA = sys.argv[idx + 1] 
+            fileB = sys.argv[idx + 2] 
+            runner.copy(fileA, fileB)
         elif 'help' in sys.argv:
             print_help()
         else:
@@ -73,23 +81,28 @@ def main():
             runner.connect(name)
     except (IndexError, AttributeError):
         print_help()
+        raise
     except SSHConnectionNotFoundError as e:
         print(e)
         
 
 def print_help():
     print("Usage:\n\n" + 
-        "sshman connect <name>\n" +
+        "sshman connect (or sshman c) <name>\n" +
         "Connects to connection <name>.\n\n" +
-        "sshman show <name>\n" +
+        "sshman show (or sshman s) <name>\n" +
         "Show details about connection <name>.\n\n" +
-        "sshman list\n" +
+        "sshman list (or sshman l, even sshman ls)\n" +
         "Lists all connections available.\n\n" +
-        "sshman add\n" +
+        "sshman add (or sshman a)\n" +
         "Will prompt data for a new connection.\n\n" +
-        "sshman edit <name>\n" +
+        "sshman edit (or sshman e) <name>\n" +
         "Will prompt to update connection <name> parameters.\n\n"
-        "sshman remove <name>\n" +
+        "sshman remove (or sshman rm) <name>\n" +
         "Removes connection <name>.\n\n" +
-        "sshman help\n" +
+        "sshman copy (or sshman cp) <name>:<file_path> <local_destination_path>\n" +
+        "Downloads file <file_path> from server <name> to <local_destination_path>.\n\n" +
+        "sshman copy (or sshman cp) <local_file_path> <name>:<remote_destination_path>\n" +
+        "Uploads file <local_file_path> to server <name> into <remote_destination_path>.\n\n" +
+        "sshman help (or sshman h)\n" +
         "Prints this message.")
