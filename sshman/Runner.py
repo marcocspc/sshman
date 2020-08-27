@@ -307,10 +307,13 @@ class Runner:
         connection_name = remote_file.split(':')[0]
         remote_file = remote_file.split(':')[1]
 
-        for connection in self.ssh_profile.profiles:
-            if connection.name == connection_name:
-                ssh_connection = connection 
-                break
+        if connection_name.isdigit():
+            ssh_connection = self.ssh_profile.profiles[int(connection_name) - 1]
+        else:
+            for connection in self.ssh_profile.profiles:
+                if connection.name == connection_name:
+                    ssh_connection = connection 
+                    break
 
         ssh_connection.set_scp_operation(remote_file, local_file, operation, r=r)
         ssh.scp(ssh_connection)

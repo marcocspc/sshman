@@ -94,8 +94,13 @@ class SSHConnection:
         else:
             cmd = ["scp"]
 
-            if self.recursive_scp:
-                cmd += ['-r']
+            try:
+                if self.recursive_scp:
+                    cmd += ['-r']
+            except AttributeError as ae:
+                #this is needed to allow compatibility with older versions
+                if "'SSHConnection' object has no attribute 'recursive_scp'" in str(ae):
+                    pass
 
             if (self.key_path != None):
                 cmd += ["-i", self.key_path]
