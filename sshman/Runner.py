@@ -305,7 +305,7 @@ class Runner:
             operation = ssh.SCP_OPERATION_UPLOAD
 
         connection_name = remote_file.split(':')[0]
-        remote_file = remote_file.split(':')[1]
+        remote_file = remote_file.split(':')[1].replace(':','')
 
         if connection_name.isdigit():
             ssh_connection = self.ssh_profile.profiles[int(connection_name) - 1]
