@@ -279,7 +279,7 @@ class Runner:
 
         new_profile_list = []
 
-        for i in names_list:
+        for name in names_list:
             for profile in self.ssh_profile.profiles:
                 if profile.name == name:
                     new_profile_list.append(profile)
