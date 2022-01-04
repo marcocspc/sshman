@@ -109,9 +109,9 @@ class SSHConnection:
                 cmd += ["-P", str(self.ssh_port)]
 
             if self.scp_operation == ssh.SCP_OPERATION_UPLOAD:
-                cmd += [self.local_file, self.user + "@" + self.server_url + ':' + self.remote_file]
+                cmd += self.local_file + [self.user + "@" + self.server_url + ':' + self.remote_file]
             else:
-                cmd += [self.user + "@" + self.server_url + ':' + self.remote_file, self.local_file]
+                cmd += [self.user + "@" + self.server_url + ':' + self.remote_file] + self.local_file
 
            
             self.local_file = None

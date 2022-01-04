@@ -83,8 +83,8 @@ def main():
                 else:
                     raise
 
-            fileA = sys.argv[idx + 1] 
-            fileB = sys.argv[idx + 2] 
+            fileA = sys.argv[idx + 1 : (len(sys.argv) - 1)] 
+            fileB = sys.argv[len(sys.argv)-1:]
             runner.copy(fileA, fileB, r=r)
         elif 'help' in sys.argv:
             print_help()

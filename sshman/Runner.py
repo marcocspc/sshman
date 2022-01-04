@@ -295,7 +295,7 @@ class Runner:
         remote_file = None
         local_file = None
         operation = None
-        if ':' in fileA: 
+        if ':' in "\t".join(fileA):
             remote_file = fileA
             local_file = fileB
             operation = ssh.SCP_OPERATION_DOWNLOAD
@@ -304,8 +304,8 @@ class Runner:
             local_file = fileA
             operation = ssh.SCP_OPERATION_UPLOAD
 
-        connection_name = remote_file.split(':')[0]
-        remote_file = remote_file.split(':')[1].replace(':','')
+        connection_name = remote_file[0].split(':')[0]
+        remote_file = remote_file[0].split(':')[1].replace(':','')
 
         if connection_name.isdigit():
             ssh_connection = self.ssh_profile.profiles[int(connection_name) - 1]
