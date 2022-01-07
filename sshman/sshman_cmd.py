@@ -93,7 +93,6 @@ def main():
             runner.connect(name)
     except (IndexError, AttributeError):
         print_help()
-        raise
     except SSHConnectionNotFoundError as e:
         print(e)
         
