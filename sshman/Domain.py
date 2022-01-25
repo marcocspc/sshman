@@ -156,7 +156,7 @@ class SSHConnection:
            
             return cmd
 
-    def add_forwarding(fwd_local_port, fwd_dest_ip_dns, fwd_dest_port):
+    def add_forwarding(self, fwd_local_port, fwd_dest_ip_dns, fwd_dest_port):
             forwarding = PortForwarding(fwd_local_port, 
                     fwd_dest_ip_dns, 
                     fwd_dest_port)
