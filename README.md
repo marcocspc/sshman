@@ -87,6 +87,10 @@ Or even just:
 - [ ] Update README.md to match changes; 
 - [ ] Allow user to check if host is up using command "check", and to keep watching using -w.
 
+### v0.3.1
+
+- [x] Add option to add additional options to SSH command
+
 ### v0.3 
 
 - [x] Add option to edit an existing connection; 
