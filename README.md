@@ -85,11 +85,8 @@ Or even just:
 - [ ] Add option to print ssh command to given connection;
 - [ ] Update help command;
 - [ ] Update README.md to match changes; 
-- [ ] Allow user to check if host is up using command "check", and to keep watching using -w.
-
-### v0.3.1
-
-- [x] Add option to add additional options to SSH command
+- [ ] Allow user to check if host is up using command "check", and to keep watching using -w;
+- [x] Customize ssh command to add parameters to the '-o' flag.
 
 ### v0.3 
 
