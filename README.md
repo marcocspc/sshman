@@ -108,11 +108,14 @@ Or even just:
 
 ### v0.4
 
+
 - [X] Add support for SCP via upload and download commands;
 - [X] Add option to print ssh command to given connection (implemented on show command);
 - [X] Update help command;
 - [X] Update README.md to match changes; 
 - [X] Allow user to check if host is up using command "waitfor".
+- [x] Customize ssh command to add parameters to the '-o' flag.
+
 
 ### v0.3 
 

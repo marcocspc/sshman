@@ -28,6 +28,7 @@ class SSHConnection:
         self.remote_file = None
         self.scp_operation = None
         self.recursive_scp = False
+        self.additional_options = []
 
 
     @classmethod
@@ -73,6 +74,16 @@ class SSHConnection:
                     item = ssh_cmd[index + 1].split(':')
 
                     conn.forwardings.append(PortForwarding(item[0], item[1], item[2]))
+                    ssh_cmd.pop(index)
+                    ssh_cmd.pop(index)
+
+            #add additional options if needed
+            for item in ssh_cmd:
+                if item == '-o':
+                    index = ssh_cmd.index(item)
+                    item = ssh_cmd[index + 1].split('=')
+
+                    conn.additional_options.append(AdditionalOption(item[0], item[1]))
                     ssh_cmd.pop(index)
                     ssh_cmd.pop(index)
 
@@ -138,14 +149,23 @@ class SSHConnection:
                 cmd += ["-L", str(fwd.fwd_local_port) + ":" +
                         str(fwd.fwd_dest_ip_dns) + ":" +
                         str(fwd.fwd_dest_port)]
+
+            for addl_option in self.additional_options:
+                cmd += ["-o", str(addl_option.option_name) + "=" +
+                        str(addl_option.option_value)]
            
             return cmd
 
-    def add_forwarding(fwd_local_port, fwd_dest_ip_dns, fwd_dest_port):
+    def add_forwarding(self, fwd_local_port, fwd_dest_ip_dns, fwd_dest_port):
             forwarding = PortForwarding(fwd_local_port, 
                     fwd_dest_ip_dns, 
                     fwd_dest_port)
             self.forwardings.append(forwarding)
+
+    def add_addl_option(self, addl_option_name, addl_option_value):
+            addl_option = AdditionalOption(addl_option_name, 
+                    addl_option_value)
+            self.additional_options.append(addl_option)
 
     def __str__(self):
         string = "--- Name: " + self.name + "\n"
@@ -161,6 +181,11 @@ class SSHConnection:
                         str(fwd.fwd_dest_ip_dns) + ":" +
                         str(fwd.fwd_dest_port) + "\n")
 
+        for addl_option in self.additional_options: 
+            string += ("Additional options: " + 
+                        str(addl_option.option_name) + "=" +
+                        str(addl_option.option_value) + "\n")
+        
         string += ("SSH Command: " + " ".join(self.get_ssh_command()) + "\n")
         
         return string
@@ -171,3 +196,9 @@ class PortForwarding:
         self.fwd_local_port = local_port
         self.fwd_dest_ip_dns = dest_ip_dns
         self.fwd_dest_port = destination_port 
+
+class AdditionalOption:
+
+    def __init__(self, option_name, option_value):
+        self.option_name = option_name
+        self.option_value = option_value

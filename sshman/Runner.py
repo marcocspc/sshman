@@ -2,7 +2,7 @@
 
 from .Dumper import SSHProfileDumper
 from . import SSH as ssh 
-from .Domain import SSHConnection
+from .Domain import AdditionalOption, SSHConnection
 from .Domain import SSHProfile
 from .Domain import PortForwarding
 from .Errors import SSHConnectionNotFoundError
@@ -87,12 +87,15 @@ class Runner:
             print(self.ssh_profile, end="")
 
     def add(self, name, fwd_list, key_path, user, 
-        server_url, ssh_port):
+        server_url, ssh_port, addl_options=[]):
 
         new_ssh = SSHConnection(name, user, server_url, ssh_port, key_path)
 
         for fwd in fwd_list:
             new_ssh.forwardings.append(fwd)
+
+        for addl_option in addl_options:
+            new_ssh.additional_options.append(addl_option)
         
         self.ssh_profile.profiles.append(new_ssh)
         self.dumper.save(self.ssh_profile)
@@ -139,8 +142,21 @@ class Runner:
 
             option = get_string_input("Will you add another port forwarding? [y/n]", "n")
 
+        additional_option_name, additional_option_value = None, None
+        option = get_string_input("Will you use additional options? [y/n]", "n")
+        additional_options = []
+
+        while(str.lower(option) == "y"):
+            additional_option_name = input("Insert option name: ")
+            additional_option_value = input("Insert option value: ")
+
+            addl_option = AdditionalOption(additional_option_name, additional_option_value)
+            additional_options.append(addl_option)
+
+            option = get_string_input("Will you add another additional option? [y/n]", "n")
+
         self.add(name, forwardings, ssh_key, user, 
-            server_url, ssh_port)
+            server_url, ssh_port, additional_options)
 
     def add_cmd(self, name, ssh_cmd):
         connection = SSHConnection.from_ssh_cmd(name, ssh_cmd)
@@ -175,6 +191,7 @@ class Runner:
                     new_ssh.ssh_port = old_ssh.ssh_port
                     new_ssh.key_path = old_ssh.key_path
                     new_ssh.forwardings = old_ssh.forwardings
+                    new_ssh.additional_options = old_ssh.additional_options
 
                     new_name = get_string_input("Insert a new connection name:", old_ssh.name)
                     if new_name != None and new_name != "":
@@ -240,17 +257,40 @@ class Runner:
 
                         option = get_string_input("Keep editing port forwardings? [y/n]", "n")
 
+                    additional_option_name, additional_option_value = None, None
+                    option = get_string_input("Will you edit additional options? [y/n]", "n")
+
+                    while(str.lower(option) == "y"):
+                        print("Available additional options:")
+                        print()
+
+                        count = 0
+                        for addl_option in new_ssh.additional_options:
+                            print(str(count + 1) + " - " +
+                                   str(addl_option.option_name) + "=" +
+                                   str(addl_option.option_value))
+                            count += 1
+
+                        option = get_int_input("Which one will you edit?", -1)
+
+                        if option > -1:
+                            additional_option_name = input("Insert option name: ")
+                            additional_option_value = input("Insert option value: ")
+
+                            addl_option = AdditionalOption(additional_option_name, additional_option_value)
+                            new_ssh.additional_options[option - 1] = addl_option
+
+                        option = get_string_input("Keep editing additional options? [y/n]", "n")
+
                     self.edit(old_ssh.name, new_ssh.name, new_ssh.forwardings, 
                             new_ssh.key_path, new_ssh.user, 
-                        new_ssh.server_url, new_ssh.ssh_port)
+                        new_ssh.server_url, new_ssh.ssh_port, new_ssh.additional_options)
                    
                 else:
                     print("Connection not found.")
 
-
-
     def edit(self, connection_name, new_name, fwd_list, ssh_key,
-        user, server_url, ssh_port):
+        user, server_url, ssh_port, addl_options=[]):
         if self.ssh_profile == None:
             print("There are no SSH Connections set.")
         else:
@@ -266,6 +306,9 @@ class Runner:
 
             for fwd in fwd_list:
                 new_ssh.forwardings.append(fwd)
+
+            for addl_option in addl_options:
+                new_ssh.additional_options.append(addl_option)
             
             self.ssh_profile.profiles[old_ssh] = new_ssh
             self.dumper.save(self.ssh_profile)
