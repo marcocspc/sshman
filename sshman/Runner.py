@@ -6,7 +6,9 @@ from .Domain import SSHConnection
 from .Domain import SSHProfile
 from .Domain import PortForwarding
 from .Errors import SSHConnectionNotFoundError
+
 import socket
+from time import sleep
 
 class Runner:
     def __init__(self):
@@ -41,7 +43,16 @@ class Runner:
                         break
 
             if ssh_connection != None: 
-                ssh.run(ssh_connection)
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                server = ssh_connection.server_url
+                port = ssh_connection.ssh_port
+
+                #check if server is up
+                if sock.connect_ex((server, port)) == 0:
+                    ssh.run(ssh_connection)
+                else:
+                    print("Connection to server {} was not successful, maybe it is not reachable?".format(ssh_connection.name))
+
             else:
                 raise SSHConnectionNotFoundError(connection_name + " does not exist.")
     
@@ -341,7 +352,7 @@ class Runner:
             port = ssh_connection.ssh_port
 
             if ssh_connection != None: 
-                while not sock.connect_ex(server, port) == 0:
+                while not sock.connect_ex((server, port)) == 0:
                     print("Connection to server {} was not successful, trying again in 2 seconds...".format(ssh_connection.name))
                     sleep(2)
                 ssh.run(ssh_connection)

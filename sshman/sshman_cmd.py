@@ -90,7 +90,7 @@ def main():
             runner.copy(fileA, fileB, r=r)
         elif 'waitfor' in sys.argv:
             try:
-                name_or_number = sys.argv[sys.argv.index('connect') + 1]
+                name_or_number = sys.argv[sys.argv.index('waitfor') + 1]
                 runner.wait_for(name_or_number)
             except IndexError:
                 runner.connect_prompt()
