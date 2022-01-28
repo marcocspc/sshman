@@ -160,6 +160,8 @@ class SSHConnection:
                         str(fwd.fwd_local_port) + ":" +
                         str(fwd.fwd_dest_ip_dns) + ":" +
                         str(fwd.fwd_dest_port) + "\n")
+
+        string += (" ".join(self.get_ssh_command()) + "\n")
         
         return string
 

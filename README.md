@@ -69,6 +69,28 @@ Like on 'add' command, you can replace `connect` for just `c`.
 
 `sshman remove <connection-name>` or `sshman rm <connection-name>`
 
+## Copying files and folders using scp
+
+To download a file:
+
+`sshman copy <connection-name>:<file_path> <destination_path>` or `sshman cp <connection-name>:<file_path> <destination_path>` 
+
+To upload a file:
+
+`sshman copy <file_path> <connection-name>:<destination_path>` or `sshman cp <file_path> <connection-name>:<destination_path>` 
+
+To download a folder:
+
+`sshman copy-recursive <connection-name>:<folder_path> <destination_path>` or `sshman cpr <connection-name>:<folder_path> <destination_path>` 
+
+To upload a folder:
+
+`sshman copy-recursive <folder_path> <connection-name>:<destination_path>` or `sshman cpr <folder_path> <connection-name>:<destination_path>` 
+
+## Keep trying to connect if server is not up
+
+`sshman waitfor <connection-name>` or `sshman wf <connection-name>` 
+
 ## Help
 
 `sshman help` or `sshman h`
@@ -79,13 +101,18 @@ Or even just:
 
 ## TODO
 
+### v0.5
+
+- [] Add support por VNC connections;
+- [] Rewrite Runner.py and sshman_cmd.py classes to support argparse; 
+
 ### v0.4
 
-- [ ] Add support for SCP via upload and download commands;
-- [ ] Add option to print ssh command to given connection;
-- [ ] Update help command;
-- [ ] Update README.md to match changes; 
-- [ ] Allow user to check if host is up using command "check", and to keep watching using -w.
+- [X] Add support for SCP via upload and download commands;
+- [X] Add option to print ssh command to given connection (implemented on show command);
+- [X] Update help command;
+- [X] Update README.md to match changes; 
+- [X] Allow user to check if host is up using command "waitfor".
 
 ### v0.3 
 
