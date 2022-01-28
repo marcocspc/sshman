@@ -31,6 +31,8 @@ def main():
         sys.argv[sys.argv.index('cp')] = 'copy'
     elif 'cpr' in sys.argv:
         sys.argv[sys.argv.index('cpr')] = 'copy-recursive'
+    elif 'wf' in sys.argv:
+        sys.argv[sys.argv.index('cpr')] = 'waitfor'
 
     try:
         if 'connect' in sys.argv:
@@ -86,6 +88,12 @@ def main():
             fileA = sys.argv[idx + 1 : (len(sys.argv) - 1)] 
             fileB = sys.argv[len(sys.argv)-1:]
             runner.copy(fileA, fileB, r=r)
+        elif 'waitfor' in sys.argv:
+            try:
+                name_or_number = sys.argv[sys.argv.index('waitfor') + 1]
+                runner.wait_for(name_or_number)
+            except IndexError:
+                runner.connect_prompt()
         elif 'help' in sys.argv:
             print_help()
         else:
@@ -119,5 +127,7 @@ def print_help():
         "Downloads directory <remote_dir_path> recursively from server <name> to <local_destination_path>.\n\n" +
         "sshman copy-recursive (or sshman cpr) <local_dir_path> <name>:<remote_destination_path>\n" +
         "Uploads directory <local_file_path> recursively to server <name> into <remote_destination_path>.\n\n" +
+        "sshman waitfor (or sshman wf) <name>\n" +
+        "Keeps trying to connect to connection <name> until it's online. Useful when rebooting a server and the user wants to connect as soon as it's available." +
         "sshman help (or sshman h)\n" +
         "Prints this message.")

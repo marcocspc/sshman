@@ -186,6 +186,8 @@ class SSHConnection:
                         str(addl_option.option_name) + "=" +
                         str(addl_option.option_value) + "\n")
         
+        string += ("SSH Command: " + " ".join(self.get_ssh_command()) + "\n")
+        
         return string
 
 class PortForwarding:

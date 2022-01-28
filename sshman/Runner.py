@@ -7,6 +7,9 @@ from .Domain import SSHProfile
 from .Domain import PortForwarding
 from .Errors import SSHConnectionNotFoundError
 
+import socket
+from time import sleep
+
 class Runner:
     def __init__(self):
         self.dumper = SSHProfileDumper()
@@ -40,7 +43,16 @@ class Runner:
                         break
 
             if ssh_connection != None: 
-                ssh.run(ssh_connection)
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                server = ssh_connection.server_url
+                port = ssh_connection.ssh_port
+
+                #check if server is up
+                if sock.connect_ex((server, port)) == 0:
+                    ssh.run(ssh_connection)
+                else:
+                    print("Connection to server {} was not successful, maybe it is not reachable?".format(ssh_connection.name))
+
             else:
                 raise SSHConnectionNotFoundError(connection_name + " does not exist.")
     
@@ -312,25 +324,28 @@ class Runner:
                     break
 
     def reorder(self):
-        print("Arranging SSH Profiles in alphabetical order... ", end="")
-        names_list = []
+        if self.ssh_profile == None:
+            print("There are no SSH Connections set.")
+        else:
+            print("Arranging SSH Profiles in alphabetical order... ", end="")
+            names_list = []
 
-        for profile in self.ssh_profile.profiles:
-            names_list.append(profile.name)
-
-        names_list.sort()
-
-        new_profile_list = []
-
-        for name in names_list:
             for profile in self.ssh_profile.profiles:
-                if profile.name == name:
-                    new_profile_list.append(profile)
-                    self.ssh_profile.profiles.remove(profile)
+                names_list.append(profile.name)
 
-        self.ssh_profile.profiles = new_profile_list
-        self.dumper.save(self.ssh_profile)
-        print("Done.")
+            names_list.sort()
+
+            new_profile_list = []
+
+            for name in names_list:
+                for profile in self.ssh_profile.profiles:
+                    if profile.name == name:
+                        new_profile_list.append(profile)
+                        self.ssh_profile.profiles.remove(profile)
+
+            self.ssh_profile.profiles = new_profile_list
+            self.dumper.save(self.ssh_profile)
+            print("Done.")
 
     def copy(self, fileA, fileB, r=None):
         ssh_connection = None
@@ -360,6 +375,33 @@ class Runner:
 
         ssh_connection.set_scp_operation(remote_file, local_file, operation, r=r)
         ssh.scp(ssh_connection)
+
+    def wait_for(self, connection_name):
+        if self.ssh_profile == None:
+            print("There are no SSH Connections set.")
+        else:
+            ssh_connection = None
+
+            if connection_name.isdigit():
+                ssh_connection = self.ssh_profile.profiles[int(connection_name) - 1]
+            else:
+                for connection in self.ssh_profile.profiles:
+                    if connection.name == connection_name:
+                        ssh_connection = connection 
+                        break
+
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server = ssh_connection.server_url
+            port = ssh_connection.ssh_port
+
+            if ssh_connection != None: 
+                while not sock.connect_ex((server, port)) == 0:
+                    print("Connection to server {} was not successful, trying again in 2 seconds...".format(ssh_connection.name))
+                    sleep(2)
+                ssh.run(ssh_connection)
+            else:
+                raise SSHConnectionNotFoundError(connection_name + " does not exist.")
+
 
 #aux functions
 def get_int_input(message, default_value):
