@@ -7,6 +7,12 @@ import sys
 def main():
     runner = Runner()
 
+    # Check for general flags
+    debug = False
+    if '--debug' in sys.argv:
+        debug = True
+        sys.argv.remove('--debug')
+
     #if structure to allow user to call commands using initials
     #For example: c will connect, rm will remove, etc
     if 'c' in sys.argv:
@@ -32,7 +38,7 @@ def main():
     elif 'cpr' in sys.argv:
         sys.argv[sys.argv.index('cpr')] = 'copy-recursive'
     elif 'wf' in sys.argv:
-        sys.argv[sys.argv.index('cpr')] = 'waitfor'
+        sys.argv[sys.argv.index('wf')] = 'waitfor'
 
     try:
         if 'connect' in sys.argv:
@@ -100,7 +106,10 @@ def main():
             name = sys.argv[1]
             runner.connect(name)
     except (IndexError, AttributeError):
-        print_help()
+        if not debug:
+            print_help()
+        else:
+            raise
     except SSHConnectionNotFoundError as e:
         print(e)
         

@@ -190,6 +190,20 @@ class SSHConnection:
         
         return string
 
+    def __setstate__(self, state):
+        '''
+        Sometimes, after updating sshman,
+        SSHConnection may have a new attribute
+        added to support a new feature.
+        This method makes sure that the old
+        connection has the new attribute added
+        safely.
+        '''
+        self.__dict__.update(state)
+        if not hasattr(self, 'additional_options'):
+            print("Updating connection " + self.name +  " to version 0.4...")
+            self.additional_options = []
+
 class PortForwarding:
 
     def __init__(self, local_port, dest_ip_dns, destination_port):
