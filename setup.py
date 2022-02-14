@@ -6,7 +6,7 @@ setup(
         "console_scripts": ['sshman=sshman.sshman_cmd:main']
         },
     packages = ["sshman"],
-    version = "0.4",
+    version = "0.4.1",
     license='gpl-3.0',        
     description = "A simple, pure-python, SSH Connection manager.",
     author = "Marco Antonio",
