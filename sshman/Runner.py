@@ -317,11 +317,17 @@ class Runner:
         if self.ssh_profile == None:
             print("There are no SSH Connections set.")
         else:
-            for connection in self.ssh_profile.profiles:
-                if connection.name == connection_name:
-                    self.ssh_profile.profiles.remove(connection)
-                    self.dumper.save(self.ssh_profile)
-                    break
+            if connection_name.isdigit():
+                connection = self.ssh_profile.profiles.pop(int(connection_name) - 1)
+                print("{} removed.".format(connection.name))
+                self.dumper.save(self.ssh_profile)
+            else:
+                for connection in self.ssh_profile.profiles:
+                    if connection.name == connection_name:
+                        self.ssh_profile.profiles.remove(connection)
+                        print("{} removed.".format(connection.name))
+                        self.dumper.save(self.ssh_profile)
+                        break
 
     def reorder(self):
         if self.ssh_profile == None:
