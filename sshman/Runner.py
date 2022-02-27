@@ -15,6 +15,18 @@ class Runner:
         self.dumper = SSHProfileDumper()
         self.ssh_profile = self.dumper.load()
 
+    
+    def _check_ssh_profile(self):
+        check = True
+
+        if self.ssh_profile == None:
+            check = False
+        elif len(self.ssh_profile.profiles) == 0:
+            check = False
+
+        if not check: print("There are no SSH Connections set.")
+        return check
+
     def list_and_prompt(self):
         self.list()
         option = get_string_input("\nInsert name or number: ", "None")
@@ -29,9 +41,7 @@ class Runner:
         self.connect(connection)
     
     def connect(self, connection_name):
-        if self.ssh_profile == None:
-            print("There are no SSH Connections set.")
-        else:
+        if self._check_ssh_profile():
             ssh_connection = None
 
             if connection_name.isdigit():
@@ -61,9 +71,7 @@ class Runner:
         self.show_connection(connection)
 
     def show_connection(self, connection_name):
-        if self.ssh_profile == None:
-            print("There are no SSH Connections set.")
-        else:
+        if self._check_ssh_profile():
             ssh_connection = None
 
             if connection_name.isdigit():
@@ -81,9 +89,7 @@ class Runner:
                 raise SSHConnectionNotFoundError(connection_name + " does not exist.")
        
     def list(self):
-        if self.ssh_profile == None:
-            print("There are no SSH Connections set.")
-        else:
+        if self._check_ssh_profile():
             print(self.ssh_profile, end="")
 
     def add(self, name, fwd_list, key_path, user, 
@@ -164,9 +170,7 @@ class Runner:
         self.dumper.save(self.ssh_profile)
 
     def edit_prompt(self, name = None):
-        if self.ssh_profile == None:
-            print("There are no SSH Connections set.")
-        else:
+        if self._check_ssh_profile():
             if name == None:
                 name = self.list_and_prompt() 
 
@@ -291,9 +295,7 @@ class Runner:
 
     def edit(self, connection_name, new_name, fwd_list, ssh_key,
         user, server_url, ssh_port, addl_options=[]):
-        if self.ssh_profile == None:
-            print("There are no SSH Connections set.")
-        else:
+        if self._check_ssh_profile():
             old_ssh = 0
 
             for connection in self.ssh_profile.profiles:
@@ -314,9 +316,7 @@ class Runner:
             self.dumper.save(self.ssh_profile)
 
     def remove(self, connection_name):
-        if self.ssh_profile == None:
-            print("There are no SSH Connections set.")
-        else:
+        if self._check_ssh_profile():
             if connection_name.isdigit():
                 connection = self.ssh_profile.profiles.pop(int(connection_name) - 1)
                 print("{} removed.".format(connection.name))
@@ -330,9 +330,7 @@ class Runner:
                         break
 
     def reorder(self):
-        if self.ssh_profile == None:
-            print("There are no SSH Connections set.")
-        else:
+        if self._check_ssh_profile():
             print("Arranging SSH Profiles in alphabetical order... ", end="")
             names_list = []
 
@@ -383,9 +381,7 @@ class Runner:
         ssh.scp(ssh_connection)
 
     def wait_for(self, connection_name):
-        if self.ssh_profile == None:
-            print("There are no SSH Connections set.")
-        else:
+        if self._check_ssh_profile():
             ssh_connection = None
 
             if connection_name.isdigit():
@@ -422,3 +418,4 @@ def get_string_input(message, default_value):
         return string if string != "" else default_value
     except ValueError:
         return default_value
+
